@@ -7,7 +7,7 @@ struct STree{
 	int tot;
 	int best;
 };
-STree *st = new STree[300000]; 
+STree *st = new STree[500000]; 
 void build(int si, int l, int r){
 	if(l == r){
 		st[si].left = v[l];

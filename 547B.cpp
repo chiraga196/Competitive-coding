@@ -30,39 +30,42 @@ int32_t main(){
         freopen("inputf.in", "r", stdin);
     	//    freopen("outputf.in", "w", stdout);
     	#endif 
-        int t; cin >> t;
-        while(t--){
-        	int n, m, a, b; cin >> n >> m >> a >> b;
-        	vector<int> row(n, 0), col(m, 0);
-        	int flag  = 1;
-        	vector<vector<int> > matrix(n, vector<int> (m, 0));
-        	for(int i = 0; i < n; i++){
-        		int r = a;
-        		for(int j = 0; j < m; j++){
-        			if(col[j] < b){
-        				col[j]++;
-        				matrix[i][j] = 1;
-        				r--;
-        			}
-        			if(r == 0)
-        				break;
-        		}
-        		if(r > 0){
-        			flag = 0;
-        			break;
-        		}
-        	}
-        	if(!flag)
-        		cout << "NO\n";
-        	else {
-        		cout << "YES\n";
-        		for(int i = 0; i < n; i++){
-        			for(int j = 0; j < m; j++){
-        				cout << matrix[i][j] ;
-        			}
-        			cout << "\n";
-        		}
-        	}
+        int n; cin >> n;
+        vector<int> v(n);
+        for(int i = 0; i < n; i++){
+        	cin >> v[i];
         }
+       // stack<int> st;
+        int l[n + 1], r[n + 1];
+        fill(l, l + n + 1, -1);
+        fill(r, r + n + 1, n);
+        stack<int> st;
+        for(int i = 0; i < n; i++){
+        	while(!st.empty() && v[st.top()] >= v[i])
+        		st.pop();
+        	if(!st.empty())
+        		l[i] =  st.top();
+        	//cout << l[i] <<" ";
+        	st.push(i);
+        }
+        stack<int> st1;
+        for(int i = n-1; i >= 0; i--){
+        	while(!st1.empty() && v[st1.top()] >= v[i])
+        		st1.pop();
+        	if(!st1.empty())
+        		r[i] =  st1.top();
+        	st1.push(i);
+        }
+        int ans[n +2];
+        fill(ans, ans + n + 2, 0);
+        for(int i = 0; i < n; i++){
+        	int ln = r[i] - l[i] - 1;
+        	//cout << ln<<" ";
+        	ans[ln] = max(ans[ln], v[i]);
+        }
+        for(int i = n - 1; i >= 1; i--)
+        	ans[i] = max(ans[i], ans[i+1]);
+        for(int i = 1; i <= n; i++)
+        	cout << ans[i] <<" ";
     	return 0;
 }

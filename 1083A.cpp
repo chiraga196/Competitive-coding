@@ -30,39 +30,37 @@ int32_t main(){
         freopen("inputf.in", "r", stdin);
     	//    freopen("outputf.in", "w", stdout);
     	#endif 
-        int t; cin >> t;
-        while(t--){
-        	int n, m, a, b; cin >> n >> m >> a >> b;
-        	vector<int> row(n, 0), col(m, 0);
-        	int flag  = 1;
-        	vector<vector<int> > matrix(n, vector<int> (m, 0));
-        	for(int i = 0; i < n; i++){
-        		int r = a;
-        		for(int j = 0; j < m; j++){
-        			if(col[j] < b){
-        				col[j]++;
-        				matrix[i][j] = 1;
-        				r--;
-        			}
-        			if(r == 0)
-        				break;
-        		}
-        		if(r > 0){
-        			flag = 0;
-        			break;
-        		}
-        	}
-        	if(!flag)
-        		cout << "NO\n";
-        	else {
-        		cout << "YES\n";
-        		for(int i = 0; i < n; i++){
-        			for(int j = 0; j < m; j++){
-        				cout << matrix[i][j] ;
-        			}
-        			cout << "\n";
-        		}
-        	}
+        int n; cin >> n;
+        vector<int> v(n + 1);
+        for(int i = 0; i < n; i++)
+        	cin >> v[i+1];
+        vector<pair<int, int >> adj[n+1];
+        for(int i = 0; i < n-1; i++){
+        	int a, b, c; cin >> a >> b >> c;
+        	adj[a].pb({b, c});
+        	adj[b].pb({a, c});
         }
+        //vector<int> dp(n+1, 0);
+        int ans = 0;
+        function<int(int, int)> dfs1 = [&](int i, int par){
+        	int mx1 = 0, mx2 = 0;
+        	ans = max(ans, v[i]);
+        	for(auto x:adj[i]){
+        		if(x.ff == par)
+        			continue;
+        		int mt = dfs1(x.ff, i) - x.ss;
+        		if(mx1 < mt){
+        			mx2 = mx1;
+        			mx1 = mt;
+        		}
+        		else if(mx2 < mt)
+        			mx2 = mt;
+        	}
+        	ans = max(ans, mx1 + mx2 + v[i]);
+        	return mx1 + v[i];
+        };
+    	ans = 0;
+        dfs1(1, 1);
+        cout << ans;
     	return 0;
 }

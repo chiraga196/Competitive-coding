@@ -24,45 +24,54 @@ using namespace std;
 #define 	  debug2(x, y, z) 	cout << x << " " << y << " " << z<<"\n";
 #define 	  int 			ll
 const   int N = 1e6+5, Mod = 1e9 + 7;
+std::vector<int> v;
+int n, m, w;
+int check(int x){
+	vector<int> l(n + 2, 0);
+	int ms = 0;
+	l[0] = 0;
+
+	for(int i = 1; i <= n; i++){
+		int y = v[i] + l[i - 1] + l[i];
+		l[i] += l[i-1];
+		if(y >= x)
+			continue;
+		else{
+			int req = x - y;
+			ms += req;
+			l[i] += req;
+			l[min(i + w, n + 1)] -= req;
+
+		}
+
+	}
+	return ms <= m;
+}
+int binary_search(int low, int end){
+	while(low < end){
+		int mid = low + end + 1;
+		mid >>= 1;
+		if(check(mid)){
+			low = mid;
+		}
+		else end = mid - 1;
+
+	}
+	return low;
+}
 int32_t main(){
     	SKILLER;
     	#ifndef ONLINE_JUDGE
         freopen("inputf.in", "r", stdin);
     	//    freopen("outputf.in", "w", stdout);
     	#endif 
-        int t; cin >> t;
-        while(t--){
-        	int n, m, a, b; cin >> n >> m >> a >> b;
-        	vector<int> row(n, 0), col(m, 0);
-        	int flag  = 1;
-        	vector<vector<int> > matrix(n, vector<int> (m, 0));
-        	for(int i = 0; i < n; i++){
-        		int r = a;
-        		for(int j = 0; j < m; j++){
-        			if(col[j] < b){
-        				col[j]++;
-        				matrix[i][j] = 1;
-        				r--;
-        			}
-        			if(r == 0)
-        				break;
-        		}
-        		if(r > 0){
-        			flag = 0;
-        			break;
-        		}
-        	}
-        	if(!flag)
-        		cout << "NO\n";
-        	else {
-        		cout << "YES\n";
-        		for(int i = 0; i < n; i++){
-        			for(int j = 0; j < m; j++){
-        				cout << matrix[i][j] ;
-        			}
-        			cout << "\n";
-        		}
-        	}
+        cin >> n >> m >> w;
+        v.resize(n + 1);
+        for(int i = 1; i <= n; i++){
+        	cin >> v[i];
         }
+        //cout << check(1000000000);
+        int ans = binary_search(-1, 1e11);
+        cout << ans <<"\n";
     	return 0;
 }
